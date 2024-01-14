@@ -1,0 +1,76 @@
+﻿@using System.Text.Encodings.Web;
+@inject JavaScriptEncoder encoder;
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Onion architecture demo</title>
+    <link href="~/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Onion architecture demo</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+
+        @{
+            var message = "";
+            if (!String.IsNullOrEmpty(TempData["Message"] as string))
+                message = @JavaScriptEncoder.Default.Encode(TempData["Message"].ToString());
+        }
+
+        <div class="alert alert-primary display-none mb-2" role="alert" id="AlertDiv">
+            <strong>For your information</strong> 
+            <span>@message</span>
+            <button type="button" class="close" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2020 - Onion Sample
+        </div>
+    </footer>
+    <script src="~/jquery/jquery.min.js"></script>
+    <script src="~/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script type="text/javascript" nonce="Z2VyZ2Vya2xCNGx0aTN1eWxidUlMVUJIR29iNHU1NDtvKihv">
+        $(document).ready(function () {
+            @if (!String.IsNullOrEmpty(message))
+            {
+                @:$("#AlertDiv").fadeTo(2000, 3).slideUp(500, function () { });
+            }
+
+            $('.alert .close').on('click', function(e) {
+                    $(this).parent().hide();
+                });
+        });
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
